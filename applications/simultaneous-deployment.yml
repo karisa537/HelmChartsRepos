@@ -10,7 +10,7 @@ spec:
     path: applications
   destination:
     server: https://kubernetes.default.svc
-    namespace: Helm-deployments
+    namespace: helm-deployments
   syncPolicy:
     automated:
       prune: true
