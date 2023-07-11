@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "test-project.fullname" . }}
+  labels:
+    {{- include "test-project.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "test-project.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "test-project.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "test-project.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+{{- if .Values.enableVolumeMount }}
+      volumes:
+      - name: logback-mount
+        configMap:
+          name: logback-{{ .Chart.Name }}-configmap
+          defaultMode: 420
+      - name: template-mount-generic
+        configMap:
+          name: ftl-{{ .Chart.Name }}-generic
+          defaultMode: 420      
+      - name: keystore-mount
+        secret:
+          secretName: secret-t24-jks-bpr
+          defaultMode: 420
+{{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+
+          #ENV VALUES
+          envFrom:
+          - configMapRef:
+              name: {{ .Chart.Name }}-configmap
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+{{- if .Values.enableVolumeMount }}
+          volumeMounts:
+          - name: logback-mount
+            mountPath: {{ .Values.mounts.logback }} 
+          - name: template-mount-generic
+            mountPath: {{ .Values.mounts.template.generic }}
+          - name: keystore-mount
+            mountPath: {{ .Values.mounts.keystore.t24 }}
+{{- end }}
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

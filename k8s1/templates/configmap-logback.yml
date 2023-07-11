@@ -1,0 +1,10 @@
+{{- if .Values.createConfigMap -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logback-{{ .Chart.Name }}-configmap
+data:
+{{- range $key, $value := .Values.logbackconfigs }}
+  {{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.springboot.name }}-deployment
+spec:
+  replicas: {{ .Values.springboot.replicas }}
+  selector:
+    matchLabels:
+      server: {{ .Values.springboot.name }}
+  template:
+    metadata:
+      labels:
+        server: {{ .Values.springboot.name }}
+    spec:
+      containers:
+        - name: {{ .Values.springboot.name }}
+          image: {{ .Values.springboot.image.name }}:{{ .Values.springboot.image.tag }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{ .Values.springboot.image.port }}
+          env:
+          - name: DB_USERNAME  # Setting Database username from Secret
+            valueFrom:
+              secretKeyRef:
+                key: db.username
+                name: {{ .Release.Name }}-auth
+          - name: DB_PASSWORD # Setting Database password from Secret
+            valueFrom:
+              secretKeyRef:
+                key: db.password
+                name: {{ .Release.Name }}-auth       
+          - name: "USERNAME"
+            valueFrom:
+              secretKeyRef:
+                key:  username
+                name: {{ .Release.Name }}-auth
+          - name: "PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                key:  password
+                name: {{ .Release.Name }}-auth
+          envFrom:
+          - configMapRef:
+              name: {{ .Chart.Name }}-configmap        
+          - secretRef:
+              name: {{ .Chart.Name }}-secret

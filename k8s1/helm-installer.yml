@@ -1,0 +1,84 @@
+     
+      # # Replace the image tag in the values.yaml file
+      # sed -i "s|image.tag:.*|image.tag: $imageTag|g" values.yaml
+      # cat values.yaml
+      # - task: CmdLine@2
+#   displayName: Create helm template for $(projectName)
+#   inputs:
+#     script: |
+#       # helm template ./helm >  $(projectName).yml --debug
+
+#       # helm template test-project ./ >  manifest.yml --debug
+
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+parameters:
+  - name: imageTag
+    type: string
+    default: 20220312.1
+  - name: REGISTRY_URL
+    type: string
+    default: jkalume
+  - name: OPENSHIFT_PROJECT_NAME
+    type: string
+    default: test-project
+  - name: PROJECT_NAME
+    type: string
+    default: test
+
+
+
+
+steps:
+- task: Bash@3
+  displayName: 'Start Minikube'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Start Minikube
+      minikube start
+
+- task: HelmInstaller@0
+  displayName: 'install helm'
+  inputs:
+    helmVersion: '3.11.0'
+    checkLatestHelmVersion: false
+    installKubectl: true
+
+- task: Bash@3
+  displayName: 'Download Private Repository'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Set up Git configuration
+
+      # Clone the private repository
+      git clone https://github.com/karisa537/shared-chart.git
+      pwd
+      ls
+      cd shared-chart/helm-templates
+      ls -lart
+      # Read the current image tag from pipeline variable
+      imageTag=${{ parameters.imageTag }}
+
+      # Replace tokens in files
+      sed -i "s/(_registryUrl_)/${{ parameters.REGISTRY_URL }}/g" values.yaml
+      sed -i "s/(_openshiftProjectName_)/${{ parameters.OPENSHIFT_PROJECT_NAME }}/g" values.yaml templates/*.yaml
+      sed -i "s/(_projectName_)/${{ parameters.PROJECT_NAME }}/g" templates/*.yaml values.yaml Chart.yaml _helpers.tpl templates/NOTES.txt
+      sed -i "s/(_image_tag_)/${{ parameters.imageTag }}/g" values.yaml
+      cat values.yaml templates/*.yaml Chart.yaml templates/_helpers.tpl templates/NOTES.txt
+      
+      echo 'Configuring git'
+      # git config --global user.email "$(Build.RequestedForEmail)"
+      # git config --global user.name "$(Build.RequestedForId)"
+      # git config user.name "Karisa Kalume"
+      # git config user.email "josephkalume842@gmail.com"
+      git add .
+      git commit -m "updated imageTag"
+      # git checkout -b test
+      git remote add orig git@github.com:karisa537/Applications-Chart.git
+      git push orig --force
+      # helm install test-project ./  --dry-run

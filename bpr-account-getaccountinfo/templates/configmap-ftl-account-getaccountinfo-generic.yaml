@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ftl-{{ .Chart.Name }}-generic
+data:
+  account-info.ftl: |
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:kcb="http://temenos.com/KCB.RW.INT.IBANK">
+        <soapenv:Header/>
+        <soapenv:Body>
+            <kcb:KCBIBankAccountDetailsEnquiry>
+                <WebRequestCommon>
+                    <company>${COMPANY_CODE}</company>
+                    <password>${COMPANY_PASSWORD}</password>
+                    <userName>${COMPANY_USERNAME}</userName>
+                </WebRequestCommon>
+                <KCBRWINTIBACCTDETSType>
+                    <enquiryInputCollection>
+                        <columnName>ACCOUNT</columnName>
+                        <criteriaValue>${ACCOUNT_NUMBER}</criteriaValue>
+                        <operand>EQ</operand>
+                    </enquiryInputCollection>
+                    <enquiryInputCollection>
+                        <columnName>L.SERVICE.CODE</columnName>
+                        <criteriaValue>${SERVICE_CODE}</criteriaValue>
+                        <operand>EQ</operand>
+                    </enquiryInputCollection>
+                    <enquiryInputCollection>
+                        <columnName>L.PROCESSING.CODE</columnName>
+                        <criteriaValue>${PROCESSING_CODE}</criteriaValue>
+                        <operand>EQ</operand>
+                    </enquiryInputCollection>
+                    <enquiryInputCollection>
+                        <columnName>L.CHANNEL.CODE</columnName>
+                        <criteriaValue>${CHANNEL_CODE}</criteriaValue>
+                        <operand>EQ</operand>
+                    </enquiryInputCollection>
+                </KCBRWINTIBACCTDETSType>
+            </kcb:KCBIBankAccountDetailsEnquiry>
+        </soapenv:Body>
+    </soapenv:Envelope>

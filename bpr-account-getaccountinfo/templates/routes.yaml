@@ -1,0 +1,72 @@
+# {{- if .Values.routes.enabled -}}
+# kind: Route
+# apiVersion: route.openshift.io/v1
+# metadata:
+#   name:  {{ include "bpr-account-getaccountinfo.fullname" . }}
+#   annotations:
+#     {{- range $key, $value := .Values.routes.annotations }}
+#     {{ $key }}: {{ $value | quote }}
+#     {{- end }}
+# spec:
+#   to:
+#     kind: Service
+#     name:  {{ include "bpr-account-getaccountinfo.fullname" . }}
+#     weight: 100
+#   port:
+#     targetPort: http
+#   wildcardPolicy: None  
+#   tls:
+#     termination: edge
+#     certificate: |
+#       -----BEGIN CERTIFICATE-----
+#       MIIDvDCCAqQCCQDf0wrwZ4ho2DANBgkqhkiG9w0BAQsFADCBnzELMAkGA1UEBhMC
+#       S0UxEDAOBgNVBAgMB05haXJvYmkxEDAOBgNVBAcMB05haXJvYmkxFzAVBgNVBAoM
+#       DktDQiBCQU5LIEdST1VQMRMwEQYDVQQLDApUZWNobm9sb2d5MRUwEwYDVQQDDAxr
+#       Y2Jncm91cC5jb20xJzAlBgkqhkiG9w0BCQEWGGJzc29sdXRpb25zQGtjYmdyb3Vw
+#       LmNvbTAeFw0yMTA5MTYxMTUxNDJaFw0zMTA5MTQxMTUxNDJaMIGfMQswCQYDVQQG
+#       EwJLRTEQMA4GA1UECAwHTmFpcm9iaTEQMA4GA1UEBwwHTmFpcm9iaTEXMBUGA1UE
+#       CgwOS0NCIEJBTksgR1JPVVAxEzARBgNVBAsMClRlY2hub2xvZ3kxFTATBgNVBAMM
+#       DGtjYmdyb3VwLmNvbTEnMCUGCSqGSIb3DQEJARYYYnNzb2x1dGlvbnNAa2NiZ3Jv
+#       dXAuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzlhebG+GONh5
+#       jSes/mjsfZzsp++OGtftkS3/xaONfQvJ6M0Ds4NnI2WxWrGL0/afJjY6jF8UeN5t
+#       LaRb4+9IB6hWsIsR3DmKlzcsB5LesJ16EB5p3W6fQhn0/uacZQOcybcBZxHwPEfU
+#       FvOjTMGyIcrJWb41rGErePx7CG2CRk/wbpk8G+JuR5bUrsyFi7JJppZy1fwyRq+f
+#       ztyVEs5ZLLIcwXo/70SL7THIPcNz7FUGgiILiDmsJwkpmHwAcqpsIgIQtZDiwEMc
+#       +z/HQXaNxw3vFEb7uHpo99ugj9dmPGf2dtOIKetN9wJyJ3XAetmSonLb6khO4f1D
+#       BbfL7Jp2PwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQBrMLmpBQ1ZSiryE6XkNobD
+#       bLvVslHFVR5fmOcgp+fC0w++OiPGWr4XsA38uiOrdsH7UAwRTT9KVRL1VD21OHUi
+#       WppjqWaYKySWKzgwDSM0sEm73/Q3PwriyfN4sADPW8Zm1UTRMn/25u+oeqTG8dsR
+#       xAvKojkb/bTnayJXVYhY9BycepMLNko0s7DiIKZsfkdhy26uMTDPDAwPcnyfDDd+
+#       Fj0v5R4xBXOuJKLgb+oz2PXDtdOYv2TZU21IwlA5V0+Cp8dyTD/mlaZumxoMuCdM
+#       jS9N3XZhMCuTkwq4G7W/D8bp9SVhU7lbTw6rJz+g+US64q8xL/0LCxIyNfsqP98L
+#       -----END CERTIFICATE-----
+#     key: |
+#       -----BEGIN PRIVATE KEY-----
+#       MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDOWF5sb4Y42HmN
+#       J6z+aOx9nOyn744a1+2RLf/Fo419C8nozQOzg2cjZbFasYvT9p8mNjqMXxR43m0t
+#       pFvj70gHqFawixHcOYqXNywHkt6wnXoQHmndbp9CGfT+5pxlA5zJtwFnEfA8R9QW
+#       86NMwbIhyslZvjWsYSt4/HsIbYJGT/BumTwb4m5HltSuzIWLskmmlnLV/DJGr5/O
+#       3JUSzlksshzBej/vRIvtMcg9w3PsVQaCIguIOawnCSmYfAByqmwiAhC1kOLAQxz7
+#       P8dBdo3HDe8URvu4emj326CP12Y8Z/Z204gp6033AnIndcB62ZKictvqSE7h/UMF
+#       t8vsmnY/AgMBAAECggEAYMHpTPmiu8cugDUploaG1oQeKMVZIlc8TAaA2CFQOGGt
+#       xR9Va/jjBSMrXfbBNZyAlj95htcS13adRXi7qg9K/GRAejpMHrNQvIWffNGu4KyH
+#       T0WjqLS1sx5O1rQ2g9uEysWov7cWqn2YA0ctvNFbASOA9TcPHgzWgL4LxzDqlKMR
+#       8ANQCmT4hsqs+TpunHuxVqqklPX3w0NmwFtJlyMNS4rOtHRxjB4gsplcrmVNs0kU
+#       Hbiy3FmDtd5JilR64KCmMJUuHUe7YFq10EW/r3auZDm38IJkwCtE7eAqls0ViOq2
+#       9UU48ucfBeWKZnZv8WSt3RnroQb/3ANQKtM1jkCJEQKBgQDojbYAY9fcRDN8oWP8
+#       UyTyNvE6RJMhRhhAHY3YCZ5pn75yCYHWWD82hDButw1f0QEyoYjDru38Jjl72Qic
+#       ZAKHRDz1eQ8R90IfWSyKBGY69bMfO9FiCAw/1/OW6j6HZ2lxP0j2IAlAKD5FJbFq
+#       Qzyt8DJGSA8TxjT5PBJqBjWXhwKBgQDjJjXx47NYC1eETdLVJxsXn2Umccio1FBq
+#       brTCuvW8f0wqnMD9mVKdpzuEqayBlE16ALr/P9jz/gdnxIx66jKlVkx4AfRPjkQO
+#       mAYpMaXr0FRFbTHsI2fYbWT/VYuSiMk9kVdJeM0SBc7+lPLs0JHP1KIo/35GFnub
+#       GV1FkIppiQKBgQDCu//+3Zyhnx66K29NmNYkWauwjkHiKA8giV8A3DUh35mbZqip
+#       s6XjYdgorfJuHNdy7V9X9YDll6ClO72BMCIJ4TNmnuPmuHVPSN4KCNsOXjaLXgzc
+#       mT6gq5YX9rk7q3XZVhQjvfnhFpHmV0T0Za9HPA7tWWP+vAgZ+Jq229I+uwKBgQCR
+#       +s6UY+ewX6mg53rlbbpllhSlfl6c0cXUgM0+kHS47X5/rDoDQPPtSbpgacLpi+u2
+#       yp1iyR+evtT3hUNbAwQFac6/GVJvhliKoHzlIHkncb2W2LRKs/5bAwLzbYDDbZEX
+#       Nj7IgxAX0w/SYNs2AlyTGm4Utw3p8S0C4mwk9t1dMQKBgQCCkxh1udB2bmoSF/FE
+#       hRuvI3H9Ak3SiRtOUBzWgotp7S7/QpbnehdOXXhfbSNoFGP/dcvr2yFHYY1KaoE5
+#       fjH+eT4mRnPdJwSnbpJ/Y3/NI0GfJiFjxcejBRQbasRxtB9TcMkN8yq8tdlA2Oy1
+#       SF2HbYreoKTkxG4W0Wy8ViOLfg==
+#       -----END PRIVATE KEY-----
+# {{- end }}
