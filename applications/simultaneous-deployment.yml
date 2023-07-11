@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: simultaneous-deployment
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/karisa537/HelmChartsRepos.git
+    targetRevision: HEAD
+    path: applications
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: Helm-deployments
+  syncPolicy:
+    automated:
+      prune: true
+  applications:
+    - name: helm-evn-test1
+      source:
+        path: applications/helm-evn-test1
+    
+    - name: bpr-account-getaccountinfo
+      source:
+        path: applications/bpr-account-getaccountinfo
+    
+    - name: k8s1
+      source:
+        path: applications/k8s1
