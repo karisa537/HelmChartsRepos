@@ -1,50 +1,68 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: helm-evn-test1-deployment
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/karisa537/HelmChartsRepos.git
-    targetRevision: HEAD
-    path: applications/helm-evn-test1
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: helm-deployments
-  syncPolicy:
-    automated:
-      prune: true
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: bpr-account-getaccountinfo-deployment
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/karisa537/HelmChartsRepos.git
-    targetRevision: HEAD
-    path: applications/bpr-account-getaccountinfo
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: helm-deployments
-  syncPolicy:
-    automated:
-      prune: true
----
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: helm-evn-test1-deployment
+# spec:
+#   project: default
+#   source:
+#     repoURL: https://github.com/karisa537/HelmChartsRepos.git
+#     targetRevision: HEAD
+#     path: applications/helm-evn-test1
+#   destination:
+#     server: https://kubernetes.default.svc
+#     namespace: helm-deployments
+#   syncPolicy:
+#     automated:
+#       prune: true
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: bpr-account-getaccountinfo-deployment
+# spec:
+#   project: default
+#   source:
+#     repoURL: https://github.com/karisa537/HelmChartsRepos.git
+#     targetRevision: HEAD
+#     path: applications/bpr-account-getaccountinfo
+#   destination:
+#     server: https://kubernetes.default.svc
+#     namespace: helm-deployments
+#   syncPolicy:
+#     automated:
+#       prune: true
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: k8s1-deployment
+# spec:
+#   project: default
+#   source:
+#     repoURL: https://github.com/karisa537/HelmChartsRepos.git
+#     targetRevision: HEAD
+#     path: applications/k8s1
+#   destination:
+#     server: https://kubernetes.default.svc
+#     namespace: helm-deployments
+#   syncPolicy:
+#     automated:
+#       prune: true
+
+
+
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: k8s1-deployment
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/karisa537/HelmChartsRepos.git
-    targetRevision: HEAD
-    path: applications/k8s1
   destination:
+    namespace: default
     server: https://kubernetes.default.svc
-    namespace: helm-deployments
+  source:
+    repoURL: https://github.com/karisa537/HelmChartsRepos.git # URL of your Git repository containing the Helm charts
+    path: applications/k8s1 # Path to the Helm chart within the repository
+    targetRevision: HEAD
+  project: default
   syncPolicy:
-    automated:
-      prune: true
+    automated: {}
