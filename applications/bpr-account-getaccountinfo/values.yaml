@@ -1,149 +1,149 @@
 # Default values for bpr-account-getaccountinfo.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-quarks:
-  replicaCount: 1
 
-  image:
-    repository: kedrocpreg04.kcbad.com/bpr-release-images/bpr-account-getaccountinfo
-    pullPolicy: IfNotPresent
-    tag: "20230303.1"
-  imagePullSecrets: {}
-  nameOverride: ""
-  fullnameOverride: ""
+replicaCount: 1
 
-  serviceAccount:
-    # Specifies whether a service account should be created
-    create: true
-    # Annotations to add to the service account
-    annotations: {}
-    # The name of the service account to use.
-    # If not set and create is true, a name is generated using the fullname template
-    name: ""
+image:
+  repository: kedrocpreg04.kcbad.com/bpr-release-images/bpr-account-getaccountinfo
+  pullPolicy: IfNotPresent
+  tag: "20230303.1"
+imagePullSecrets: {}
+nameOverride: ""
+fullnameOverride: ""
 
-  podAnnotations: {}
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
 
-  podSecurityContext: {}
-    # fsGroup: 2000
+podAnnotations: {}
 
-  securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
+podSecurityContext: {}
+  # fsGroup: 2000
 
-  # Pod hostAliases
-  hostAliases:
-    - ip: "10.219.2.156"
-      hostnames:
-        - "kedrr21chande03"
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
 
-  ## ReadinessProbe and LivenessProbe
-  readinessProbe:
-    tcpSocket:
-      port: 8080
-    initialDelaySeconds: 30
-    timeoutSeconds: 2
-    periodSeconds: 30
-    successThreshold: 1
-    failureThreshold: 20
-  livenessProbe:
-    tcpSocket:
-      port: 8080
-    initialDelaySeconds: 720
-    timeoutSeconds: 2
-    periodSeconds: 20
-    successThreshold: 1
-    failureThreshold: 3
+# Pod hostAliases
+hostAliases:
+  - ip: "10.219.2.156"
+    hostnames:
+      - "kedrr21chande03"
 
-  service:
-    type: ClusterIP
+## ReadinessProbe and LivenessProbe
+readinessProbe:
+  tcpSocket:
     port: 8080
+  initialDelaySeconds: 30
+  timeoutSeconds: 2
+  periodSeconds: 30
+  successThreshold: 1
+  failureThreshold: 20
+livenessProbe:
+  tcpSocket:
+    port: 8080
+  initialDelaySeconds: 720
+  timeoutSeconds: 2
+  periodSeconds: 20
+  successThreshold: 1
+  failureThreshold: 3
 
-  ingress:
-    enabled: false
-    className: ""
-    annotations: {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
-    hosts:
-      - host: chart-example.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - chart-example.local
+service:
+  type: ClusterIP
+  port: 8080
 
-  resources: 
-    limits:
-      cpu: 500m
-      memory: 640Mi
-    requests:
-      cpu: 250m
-      memory: 384Mi
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
-  autoscaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 1
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
+resources: 
+  limits:
+    cpu: 500m
+    memory: 640Mi
+  requests:
+    cpu: 250m
+    memory: 384Mi
 
-  nodeSelector:
-    enabled: false
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
 
-  tolerations: []
+nodeSelector:
+  enabled: false
 
-  affinity: {}
+tolerations: []
 
-  routes:
-    enabled: true
-    annotations:
-      haproxy.router.openshift.io/timeout: 60s
-      haproxy.router.openshift.io/Access-Control-Allow-Origin: "*"
-      haproxy.router.openshift.io/ip_whitelist: 192.168.148.9 10.128.12.236 10.219.101.19 192.168.158.9
+affinity: {}
 
-  #MOUNT-PATHS
-  mounts:
-    logback: /mnt/logback/
-    keystore: 
-      t24: /mnt/keystore/
-    certificates: 
-      t24: /mnt/certificates/
-    template:
-      generic: /mnt/templates/generic/ 
+routes:
+  enabled: true
+  annotations:
+    haproxy.router.openshift.io/timeout: 60s
+    haproxy.router.openshift.io/Access-Control-Allow-Origin: "*"
+    haproxy.router.openshift.io/ip_whitelist: 192.168.148.9 10.128.12.236 10.219.101.19 192.168.158.9
 
-  secrets: 
-    T24_USERNAME: "INPUTT"
-    T24_PASSWORD: "123456"
-    AMQP_USERNAME: "admin"
-    AMQP_PASSWORD: "admin"
-    DATABASE_USERNAME: "loyaltyinhouse"
-    DATABASE_PASSWORD: "LOyalty!!321Test"
-    API_USERNAME: "admin"
-    API_PASSWORD: "admin"
+#MOUNT-PATHS
+mounts:
+  logback: /mnt/logback/
+  keystore: 
+    t24: /mnt/keystore/
+  certificates: 
+    t24: /mnt/certificates/
+  template:
+    generic: /mnt/templates/generic/ 
 
-  #CONFIGMAPS  
-  configs:
-    ENABLE_SSL: "false"
-    VAULT_END_POINT: "https://bpr-vault-connector-bpr-mwe-services.apps.kedrocpd01.kcbad.com/api/v1/getCredentials/"
-    CHANNEL_NAME: "AGENCY"
-    T24_KEYSTORE_FILE_NAME: "t24-keystore.jks"
-    T24_END_POINT: "http://10.219.101.63:9089/KCB.RW.INT.IBANK/services"
-    DATASOURCE_DRIVER: "oracle.jdbc.driver.OracleDriver"
-    JDBC_URL: "jdbc:oracle:thin:@//10.219.2.45:1521/knob12"
-    T24_REQUEST_TIMEOUT: "45000"
-    T24_READ_TIMEOUT: "45000"
-    T24_CONNECTION_TIMEOUT: "60000"
-    ERROR_MAPPER_CHANNEL_CODES: "103"
-    AMQP_HOSTNAME: "bpr-amq-amqp"
-    AMQP_PORT: "5672"
-    TZ: "Africa/Kigali"
-    HTTP_PROTOCOL: "https"
-    JAVA_OPTIONS: "-XX:TieredStopAtLevel=1 -Xmx512m -Xss4m -Xms128m -XX:ParallelGCThreads=1 -XX:ConcGCThreads=1 -Dlog4j2.formatMsgNoLookups=true -Djava.util.concurrent.ForkJoinPool.common.parallelism=1"
-    OFFLINE_URL: "http://bpr-sync-service.bpr-uat-financial-transactions:8080/api/v1/agency-funds-transfer-v2"
-    OFFLINE_SWITCH: "TRUE"
+secrets: 
+  T24_USERNAME: "INPUTT"
+  T24_PASSWORD: "123456"
+  AMQP_USERNAME: "admin"
+  AMQP_PASSWORD: "admin"
+  DATABASE_USERNAME: "loyaltyinhouse"
+  DATABASE_PASSWORD: "LOyalty!!321Test"
+  API_USERNAME: "admin"
+  API_PASSWORD: "admin"
+
+#CONFIGMAPS  
+configs:
+  ENABLE_SSL: "false"
+  VAULT_END_POINT: "https://bpr-vault-connector-bpr-mwe-services.apps.kedrocpd01.kcbad.com/api/v1/getCredentials/"
+  CHANNEL_NAME: "AGENCY"
+  T24_KEYSTORE_FILE_NAME: "t24-keystore.jks"
+  T24_END_POINT: "http://10.219.101.63:9089/KCB.RW.INT.IBANK/services"
+  DATASOURCE_DRIVER: "oracle.jdbc.driver.OracleDriver"
+  JDBC_URL: "jdbc:oracle:thin:@//10.219.2.45:1521/knob12"
+  T24_REQUEST_TIMEOUT: "45000"
+  T24_READ_TIMEOUT: "45000"
+  T24_CONNECTION_TIMEOUT: "60000"
+  ERROR_MAPPER_CHANNEL_CODES: "103"
+  AMQP_HOSTNAME: "bpr-amq-amqp"
+  AMQP_PORT: "5672"
+  TZ: "Africa/Kigali"
+  HTTP_PROTOCOL: "https"
+  JAVA_OPTIONS: "-XX:TieredStopAtLevel=1 -Xmx512m -Xss4m -Xms128m -XX:ParallelGCThreads=1 -XX:ConcGCThreads=1 -Dlog4j2.formatMsgNoLookups=true -Djava.util.concurrent.ForkJoinPool.common.parallelism=1"
+  OFFLINE_URL: "http://bpr-sync-service.bpr-uat-financial-transactions:8080/api/v1/agency-funds-transfer-v2"
+  OFFLINE_SWITCH: "TRUE"
