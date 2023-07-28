@@ -1,9 +1,23 @@
-apiVersion: v2
-name: quarkus-subchart
-type: application
-version: 1.0.0
-appVersion: "1.0.0"
-dependencies:
-- name: quarkus
-  version: 0.0.3
-  repository: https://github.com/karisa537/HelmChartsRepos.git
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello
+spec:
+  destination:
+    name: ''
+    namespace: helm-deployments
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: application/k8s1
+    repoURL: 'https://github.com/karisa537/HelmChartsRepos.git'
+    targetRevision: test
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+
+
+
+      argocd app create hello --dest-namespace helm-deployments --dest-server https://kubernetes.default.svc --repo https://github.com/karisa537/HelmChartsRepos.git --path application/k8s1 --revision test --project default

@@ -1,171 +1,222 @@
-# cd applications
-# helm upgrade --install bpr-v1 ./bpr-account-getaccountinfo -n helm-deployments
-# helm upgrade --install helm-evn-v1 ./helm-evn-test1 -n helm-deployments
-# helm upgrade --install k8s1-v1 ./k8s1 -n helm-deployments
+# #!/bin/bash
+# export KUBERNETES_SKIP_WARN_ON_INSECURE_CONNECTION=true
 
+# # Load the configuration file
+# source config.yaml
 
-#!/bin/bash
-export KUBERNETES_SKIP_WARN_ON_INSECURE_CONNECTION=true
-# MAX_RETRIES=3
-# TIMEOUT_SECONDS=60
+# # Parse the batch size argument (if provided)
+# if [ -n "$1" ]; then
+#   batch_size="$1"
+# else
+#   # Default batch size if not provided
+#   batch_size=3
+# fi
 
-# function create_argocd_app_with_retry {
-#   local app_name=$1
-#   local repo_url=$2
-#   local app_path=$3
-
-#   local attempt=1
-
-#   while [[ $attempt -le $MAX_RETRIES ]]; do
-#     echo "Creating Argo CD app: $app_name (Attempt: $attempt)"
-
-#     # Execute the argocd app create command with a timeout
-#     timeout $TIMEOUT_SECONDS argocd app create $app_name \
-#       --repo $repo_url \
-#       --path $app_path \
-#       --dest-server https://kubernetes.default.svc \
-#       --dest-namespace default
-
-#     exit_code=$?
-
-#     if [[ $exit_code -eq 0 ]]; then
-#       echo "Successfully created Argo CD app: $app_name"
-#       return 0
-#     else
-#       echo "Error creating Argo CD app: $app_name (Attempt: $attempt)"
-#       ((attempt++))
-#     fi
-#   done
-
-#   echo "Failed to create Argo CD app: $app_name after $MAX_RETRIES attempts"
-#   return 1
+# function create_apps {
+#     for app_name in "$@"; do
+#         argocd app create "$app_name" \
+#             --repo "$repo" \
+#             --revision "$branch_name" \
+#             --path "$path/k8s1" \
+#             --dest-server https://kubernetes.default.svc \
+#             --project "$project_name" \
+#             --values "$values_file" \
+#             --dest-namespace "$dest_name_space"
+#     done
 # }
 
-# # Define an array to hold the app_names
-# app_names=("k8s1" "helm-evn-test1" "bpr-account-getaccountinfo")
-
-
-# argocd login 127.0.0.1:8080 --username admin --password vC08kXnlIYFViHrn --auth-token Gr6lHHH90xx9JMUraXboYxCl2P1RoDPlLgFj8QXsBCYTqsKpJ8KEzK9lZaBegCZe
-
-# # Loop through the array and create apps with retry and timeout
-# for app_name in "${app_names[@]}"; do
-#   create_argocd_app_with_retry "$app_name" "https://github.com/karisa537/HelmChartsRepos.git" "applications/$app_name"
-# done
-
-# echo 'completed'
-
-
-#!/bin/bash
-
-# MAX_RETRIES=3
-# TIMEOUT_SECONDS=60
-
-# function sync_argocd_app_with_retry {
-#   local app_name=$1
-
-#   local attempt=1
-
-#   while [[ $attempt -le $MAX_RETRIES ]]; do
-#     echo "Syncing Argo CD app: $app_name (Attempt: $attempt)"
-
-#     # Execute the argocd app sync command with a timeout
-#     timeout $TIMEOUT_SECONDS argocd app sync $app_name
-
-#     exit_code=$?
-
-#     if [[ $exit_code -eq 0 ]]; then
-#       echo "Successfully synced Argo CD app: $app_name"
-#       return 0
-#     else
-#       echo "Error syncing Argo CD app: $app_name (Attempt: $attempt)"
-#       ((attempt++))
-#     fi
-#   done
-
-#   echo "Failed to sync Argo CD app: $app_name after $MAX_RETRIES attempts"
-#   return 1
+# function sync_apps {
+#     for app_name in "$@"; do
+#         argocd app sync "$app_name" --grpc-web
+#     done
 # }
 
-# # Define the app_names array
-# app_names=("k8s1" "helm-evn-test1" "bpr-account-getaccountinfo" "final-app")
+# # Create apps in batches
+# num_apps="${#app_names[@]}"
+# num_batches=$(( (num_apps + batch_size - 1) / batch_size ))
 
-# echo 'Create the applications' > logfile1.yml
+# for (( batch=0; batch < num_batches; batch++ )); do
+#     start_idx=$((batch * batch_size))
+#     end_idx=$(( (batch + 1) * batch_size - 1))
+#     apps_batch=("${app_names[@]:$start_idx:$batch_size}")
 
-# argocd login 127.0.0.1:8080 --username admin --password vC08kXnlIYFViHrn --auth-token Gr6lHHH90xx9JMUraXboYxCl2P1RoDPlLgFj8QXsBCYTqsKpJ8KEzK9lZaBegCZe
-
-# # Loop through the array and sync apps with retry and timeout
-# for app_name in "${app_names[@]}"; do
-#   sync_argocd_app_with_retry "$app_name"
+#     create_apps "${apps_batch[@]}"
 # done
 
-# echo 'completed'
+# sleep 30
+# echo 'create completed'
+
+# # Sync apps in batches
+# for (( batch=0; batch < num_batches; batch++ )); do
+#     start_idx=$((batch * batch_size))
+#     end_idx=$(( (batch + 1) * batch_size - 1))
+#     apps_batch=("${app_names[@]:$start_idx:$batch_size}")
+
+#     sync_apps "${apps_batch[@]}"
+# done
+
+# echo 'sync complete'
+
+# ====================================================== #
+# =======================================================#
+
+#!/bin/bash
+# export KUBERNETES_SKIP_WARN_ON_INSECURE_CONNECTION=true
+
+# # Load the configuration file
+# source config.yaml
+
+# # Parse the batch size argument (if provided)
+# if [ -n "$1" ]; then
+#   batch_size="$1"
+# else
+#   # Default batch size if not provided
+#   batch_size=3
+# fi
 
 # function retry {
 #     local n=1
 #     local max=5
 #     local delay=15
 #     while true; do
-#     "$@" && break || {
-#     if [[ $n -lt $max ]]; then
-#     ((n++))
-#     echo "Command failed. Attempt $n/$max:"
-#     sleep $delay;
-#     else
-#     fail "The command has failed after $n attempts."
-#     fi
-#     }
+#         "$@" && break || {
+#             if [[ $n -lt $max ]]; then
+#                 ((n++))
+#                 echo "Command failed. Attempt $n/$max:"
+#                 sleep $delay;
+#             else
+#                 echo "The command has failed after $n attempts."
+#                 return 1
+#             fi
+#         }
 #     done
 # }
-# helm-evn-test1echo 'Create the applications' > logfile1.yml
-# # argocd login 127.0.0.1:8080 --username admin --password vC08kXnlIYFViHrn --auth-token Gr6lHHH90xx9JMUraXboYxCl2P1RoDPlLgFj8QXsBCYTqsKpJ8KEzK9lZaBegCZe 
 
-# argocd app create k8s1 --repo https://github.com/karisa537/HelmChartsRepos.git --path applications/k8s1 --dest-server https://kubernetes.default.svc --dest-namespace default
-# argocd app create helm-evn-test1 --repo https://github.com/karisa537/HelmChartsRepos.git --path applications/helm-evn-test1 --dest-server https://kubernetes.default.svc --dest-namespace default
-# argocd app create bpr-account-getaccountinfo --repo https://github.com/karisa537/HelmChartsRepos.git --path applications/bpr-account-getaccountinfo --dest-server https://kubernetes.default.svc --dest-namespace default
+# function create_apps {
+#     for app_name in "$@"; do
+#         retry argocd app create "$app_name" \
+#             --repo "$repo" \
+#             --revision "$branch_name" \
+#             --path "$path/k8s1" \
+#             --dest-server https://kubernetes.default.svc \
+#             --project "$project_name" \
+#             --values "$values_file" \
+#             --dest-namespace "$dest_name_space"
+#     done
+# }
+
+# function sync_apps {
+#     for app_name in "$@"; do
+#         retry argocd app sync "$app_name" --grpc-web
+#     done
+# }
+
+# # Create apps in batches
+# num_apps="${#app_names[@]}"
+# num_batches=$(( (num_apps + batch_size - 1) / batch_size ))
+
+# for (( batch=0; batch < num_batches; batch++ )); do
+#     start_idx=$((batch * batch_size))
+#     end_idx=$(( (batch + 1) * batch_size - 1))
+#     apps_batch=("${app_names[@]:$start_idx:$batch_size}")
+
+#     create_apps "${apps_batch[@]}"
+# done
 
 # sleep 30
 # echo 'create completed'
-# argocd app sync k8s1 helm-evn-test1 bpr-account-getaccountinfo
+
+# # Sync apps in batches
+# for (( batch=0; batch < num_batches; batch++ )); do
+#     start_idx=$((batch * batch_size))
+#     end_idx=$(( (batch + 1) * batch_size - 1))
+#     apps_batch=("${app_names[@]:$start_idx:$batch_size}")
+
+#     sync_apps "${apps_batch[@]}"
+# done
+
 # echo 'sync complete'
 
+# ======================================================= #
+# ======================================================= #
+
+
 #!/bin/bash
+# argocd login 127.0.0.1:8080 --username admin --password vC08kXnlIYFViHrn --auth-token wQ:xXRcUo\F5E;;viQETsUGDEYk}:J@gHOqYQ@:9|dSY6Kr"LbtT}}}1pR:;=kqO
+
+
+export ARGOCD_OPTS="--insecure"
+
+# Load the configuration file
+source config.yaml
+
+# Parse the batch size argument (if provided)
+if [ -n "$1" ]; then
+  batch_size="$1"
+else
+  # Default batch size if not provided
+  batch_size=3
+fi
 
 function retry {
     local n=1
     local max=5
     local delay=15
-    while true; do
+    while [ $n -le $max ]; do
         "$@" && break || {
-            if [[ $n -lt $max ]]; then
+            if [ $n -lt $max ]; then
                 ((n++))
-                echo "Command failed. Attempt $n/$max:"
-                sleep $delay;
+                echo "Command failed for $app_name . Attempt $n/$max:"
+                sleep $delay
             else
-                fail "The command has failed after $n attempts."
+                echo "The command has failed after $n attempts. Moving to the next app."
+                return 1
             fi
         }
     done
 }
 
+function create_apps {
+    for app_name in "$@"; do
+        retry argocd app create "$app_name" \
+            --repo "$repo" \
+            --revision "$branch_name" \
+            --path "$path/k8s1" \
+            --dest-server https://kubernetes.default.svc \
+            --project "$project_name" \
+            --values "$values_file" \
+            --dest-namespace "$dest_name_space"
+    done
+}
 
-app_names=("k8s1" "helm-evn-test1" "bpr-account-getaccountinfo")
-# argocd login 127.0.0.1:8080 --username admin --password vC08kXnlIYFViHrn --auth-token Gr6lHHH90xx9JMUraXboYxCl2P1RoDPlLgFj8QXsBCYTqsKpJ8KEzK9lZaBegCZe
+function sync_apps {
+    for app_name in "$@"; do
+        retry argocd app sync "$app_name" --grpc-web
+    done
+}
 
-# Loop through the array and create apps with retry
-for app_name in "${app_names[@]}"; do
-    retry argocd app create "$app_name" \
-        --repo https://github.com/karisa537/HelmChartsRepos.git \
-        --path "applications/$app_name" \
-        --dest-server https://kubernetes.default.svc \
-        --dest-namespace default
+# Create apps in batches
+num_apps="${#app_names[@]}"
+num_batches=$(( (num_apps + batch_size - 1) / batch_size ))
+
+for (( batch=0; batch < num_batches; batch++ )); do
+    start_idx=$((batch * batch_size))
+    end_idx=$(( (batch + 1) * batch_size - 1))
+    apps_batch=("${app_names[@]:$start_idx:$batch_size}")
+
+    create_apps "${apps_batch[@]}"
 done
 
 sleep 30
 echo 'create completed'
 
-# Loop through the array and sync apps with retry
-for app_name in "${app_names[@]}"; do
-    retry argocd app sync "$app_name"
+# Sync apps in batches
+for (( batch=0; batch < num_batches; batch++ )); do
+    start_idx=$((batch * batch_size))
+    end_idx=$(( (batch + 1) * batch_size - 1))
+    apps_batch=("${app_names[@]:$start_idx:$batch_size}")
+
+    sync_apps "${apps_batch[@]}"
 done
 
 echo 'sync complete'

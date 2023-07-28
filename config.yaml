@@ -1,0 +1,30 @@
+# # config.yaml
+# # "k8s1" "helm-evn-test1" "bpr-account-getaccountinfo"
+# app_names=("k8s1" "helm-evn-test1" "bpr-account-getaccountinfo "hello1" "hello2" "hello5" "hello3" "hello4" "hello6")
+
+# repo="https://github.com/karisa537/HelmChartsRepos.git"
+# path="applications"
+# dest_name_space="helm-deployments"
+# project_name="test-project"
+# values_file="values.yaml"
+# branch_name="test"
+
+
+app_names=(
+  "hello1"
+  "hello2"
+  "hello5"
+  "hello3"
+  "hello4"
+  "hello6"
+  "k8s1"
+  "helm-evn-test1"
+  "bpr-account-getaccountinfo"
+)
+repo="https://github.com/karisa537/HelmChartsRepos.git"
+path="applications"
+dest_name_space="helm-deployments"
+project_name="test-project"
+values_file="values.yaml"
+branch_name="test"
+argocd login 127.0.0.1:8080 --username admin --password vC08kXnlIYFViHrn --auth-token wQ:xXRcUo\F5E;;viQETsUGDEYk}:J@gHOqYQ@:9|dSY6Kr"LbtT}}}1pR:;=kqO
