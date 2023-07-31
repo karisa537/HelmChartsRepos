@@ -1,47 +1,47 @@
-springboot:
+
+name: envtrial-latest
+replicas: 1
+
+image:
+  name: jkalume/kari-git-images
+  tag: "20230130.1"
+  port: 8080
+  env: 
+  - name: NODE_ENV
+    value: production
+# username: root
+# password: password
+service:
   name: envtrial-latest
-  replicas: 1
-
-  image:
-    name: jkalume/kari-git-images
-    tag: "20230130.1"
-    port: 8080
-    env: 
-    - name: NODE_ENV
-      value: production
-  # username: root
-  # password: password
-  service:
-    name: envtrial-latest
-    type: ClusterIP
-  secrets:
-    data:
-      create: true
-      password: "password"
-      username: root
-      db.username: dGVzdHVzZXI=
-      db.password: dGVzdHVzZXJAMTIz
-  #CONFIGMAPS  
-  configs:
-    DB_HOST: "mysql"
-    DB_NAME: "karisaTestDB"
+  type: ClusterIP
+secrets:
+  create: true
+  data:
+    password: "password"
+    username: root
+    db.username: dGVzdHVzZXI=
+    db.password: dGVzdHVzZXJAMTIz
+#CONFIGMAPS  
+configs:
+  DB_HOST: "mysql"
+  DB_NAME: "karisaTestDB"
 
 
-    # ENABLE_SSL: "false"
-    # VAULT_END_POINT: "https://bpr-vault-connector-bpr-mwe-services.apps.kedrocpd01.kcbad.com/api/v1/getCredentials/"
-    # CHANNEL_NAME: "AGENCY"
-    # T24_KEYSTORE_FILE_NAME: "t24-keystore.jks"
-    # T24_END_POINT: "http://10.219.101.63:9089/KCB.RW.INT.IBANK/services"
-    # DATASOURCE_DRIVER: "oracle.jdbc.driver.OracleDriver"
-    # JDBC_URL: "jdbc:oracle:thin:@//10.219.2.45:1521/knob12"
-    # T24_REQUEST_TIMEOUT: "45000"
-    # T24_READ_TIMEOUT: "45000"
-    # T24_CONNECTION_TIMEOUT: "60000"
-    # ERROR_MAPPER_CHANNEL_CODES: "103"
-    # AMQP_HOSTNAME: "bpr-amq-amqp"
-    # AMQP_PORT: "5672"
-    # TZ: "Africa/Kigali"
-    # HTTP_PROTOCOL: "https"
-    # JAVA_OPTIONS: "-XX:TieredStopAtLevel=1 -Xmx512m -Xss4m -Xms128m -XX:ParallelGCThreads=1 -XX:ConcGCThreads=1 -Dlog4j2.formatMsgNoLookups=true -Djava.util.concurrent.ForkJoinPool.common.parallelism=1"
-    # OFFLINE_URL: "http://bpr-sync-service.bpr-uat-financial-transactions:8080/api/v1/agency-funds-transfer-v2"
-    # OFFLINE_SWITCH: "TRUE"
+  # ENABLE_SSL: "false"
+  # VAULT_END_POINT: "https://bpr-vault-connector-bpr-mwe-services.apps.kedrocpd01.kcbad.com/api/v1/getCredentials/"
+  # CHANNEL_NAME: "AGENCY"
+  # T24_KEYSTORE_FILE_NAME: "t24-keystore.jks"
+  # T24_END_POINT: "http://10.219.101.63:9089/KCB.RW.INT.IBANK/services"
+  # DATASOURCE_DRIVER: "oracle.jdbc.driver.OracleDriver"
+  # JDBC_URL: "jdbc:oracle:thin:@//10.219.2.45:1521/knob12"
+  # T24_REQUEST_TIMEOUT: "45000"
+  # T24_READ_TIMEOUT: "45000"
+  # T24_CONNECTION_TIMEOUT: "60000"
+  # ERROR_MAPPER_CHANNEL_CODES: "103"
+  # AMQP_HOSTNAME: "bpr-amq-amqp"
+  # AMQP_PORT: "5672"
+  # TZ: "Africa/Kigali"
+  # HTTP_PROTOCOL: "https"
+  # JAVA_OPTIONS: "-XX:TieredStopAtLevel=1 -Xmx512m -Xss4m -Xms128m -XX:ParallelGCThreads=1 -XX:ConcGCThreads=1 -Dlog4j2.formatMsgNoLookups=true -Djava.util.concurrent.ForkJoinPool.common.parallelism=1"
+  # OFFLINE_URL: "http://bpr-sync-service.bpr-uat-financial-transactions:8080/api/v1/agency-funds-transfer-v2"
+  # OFFLINE_SWITCH: "TRUE"

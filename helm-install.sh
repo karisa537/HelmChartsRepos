@@ -142,9 +142,12 @@
 # !/bin/bash
 
 # ArgoCD login
+echo 'Log in to ArgoCD'
 argocd login 127.0.0.1:8080 --username admin --password vC08kXnlIYFViHrn --auth-token qWpbyD9zppUvWd3mVkeEqs6ohKkjIaophRu2Ts95lSblscxCva6WJArxWxkgG8eE --insecure
+export ARGOCD_OPTS="--insecure"
 
 # Load the configuration file
+echo 'Loading configs from file'
 source config.yaml
 
 # Parse the batch size argument (if provided)

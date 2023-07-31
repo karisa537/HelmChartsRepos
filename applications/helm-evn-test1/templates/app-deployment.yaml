@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.springboot.name }}-deployment
+  name: {{ .Values.name }}-deployment
 spec:
-  replicas: {{ .Values.springboot.replicas }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      server: {{ .Values.springboot.name }}
+      server: {{ .Values.name }}
   template:
     metadata:
       labels:
-        server: {{ .Values.springboot.name }}
+        server: {{ .Values.name }}
     spec:
       containers:
-        - name: {{ .Values.springboot.name }}
-          image: {{ .Values.springboot.image.name }}:{{ .Values.springboot.image.tag }}
+        - name: {{ .Values.name }}
+          image: {{ .Values.image.name }}:{{ .Values.image.tag }}
           imagePullPolicy: Always
           ports:
-            - containerPort: {{ .Values.springboot.image.port }}
+            - containerPort: {{ .Values.image.port }}
           env:
           - name: DB_USERNAME  # Setting Database username from Secret
             valueFrom:

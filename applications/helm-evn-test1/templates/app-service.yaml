@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.springboot.service.name }}
+  name: {{ .Values.service.name }}
 spec:
-  type: {{ .Values.springboot.service.type }}
+  type: {{ .Values.service.type }}
   ports:
     - port: 80
-      targetPort: {{ .Values.springboot.image.port }}
+      targetPort: {{ .Values.image.port }}
   selector:
-    server: {{ .Values.springboot.name }}
+    server: {{ .Values.name }}
