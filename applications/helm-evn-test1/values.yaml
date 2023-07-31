@@ -14,11 +14,13 @@ springboot:
   service:
     name: envtrial-latest
     type: ClusterIP
-  secrets: 
-    password: "password"
-    username: root
-    db.username: dGVzdHVzZXI=
-    db.password: dGVzdHVzZXJAMTIz
+  secrets:
+    data:
+      create: true
+      password: "password"
+      username: root
+      db.username: dGVzdHVzZXI=
+      db.password: dGVzdHVzZXJAMTIz
   #CONFIGMAPS  
   configs:
     DB_HOST: "mysql"

@@ -1,9 +1,8 @@
-# #!/bin/bash
+#!/bin/bash
 # export KUBERNETES_SKIP_WARN_ON_INSECURE_CONNECTION=true
 
 # # Load the configuration file
 # source config.yaml
-
 # # Parse the batch size argument (if provided)
 # if [ -n "$1" ]; then
 #   batch_size="$1"
@@ -140,12 +139,10 @@
 # ======================================================= #
 # ======================================================= #
 
+# !/bin/bash
 
-#!/bin/bash
-# argocd login 127.0.0.1:8080 --username admin --password vC08kXnlIYFViHrn --auth-token wQ:xXRcUo\F5E;;viQETsUGDEYk}:J@gHOqYQ@:9|dSY6Kr"LbtT}}}1pR:;=kqO
-
-
-export ARGOCD_OPTS="--insecure"
+# ArgoCD login
+argocd login 127.0.0.1:8080 --username admin --password vC08kXnlIYFViHrn --auth-token qWpbyD9zppUvWd3mVkeEqs6ohKkjIaophRu2Ts95lSblscxCva6WJArxWxkgG8eE --insecure
 
 # Load the configuration file
 source config.yaml
@@ -166,7 +163,7 @@ function retry {
         "$@" && break || {
             if [ $n -lt $max ]; then
                 ((n++))
-                echo "Command failed for $app_name . Attempt $n/$max:"
+                echo "Command failed: . Attempt $n/$max:"
                 sleep $delay
             else
                 echo "The command has failed after $n attempts. Moving to the next app."
@@ -181,7 +178,7 @@ function create_apps {
         retry argocd app create "$app_name" \
             --repo "$repo" \
             --revision "$branch_name" \
-            --path "$path/k8s1" \
+            --path "$path/helm-evn-test1" \
             --dest-server https://kubernetes.default.svc \
             --project "$project_name" \
             --values "$values_file" \
@@ -191,7 +188,7 @@ function create_apps {
 
 function sync_apps {
     for app_name in "$@"; do
-        retry argocd app sync "$app_name" --grpc-web
+        retry argocd app sync "$app_name"
     done
 }
 
